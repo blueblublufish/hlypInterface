@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://rm-wz9qd1g56y33ogc292o.mysql.rds.aliyuncs.com:3306/heso_data_yiersan
+    username: sqlroot
+    password: myHLYP3701
+server:
+  port: 8988
+
+hello:
+  title: ttt
+  name: 1212
+
+wxPay:
+  mpAppId: wx531766c4b68163fa
+  mchId: 1495316782
+  mchKey: HAGO38g12haiG87Tug57syGuy6afy672
+  notifyUrl: https://hlapi.myhlyp.com/hlypInterface/weixin/wxNotify
