@@ -2,10 +2,7 @@ package com.hlyp.api.dao;
 
 import com.hlyp.api.bean.User;
 import com.hlyp.api.dao.baseDao.MyMapper;
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * Created by Lenovo on 2018/12/25.

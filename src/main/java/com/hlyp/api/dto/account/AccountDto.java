@@ -1,16 +1,20 @@
-package com.hlyp.api.bean;
+package com.hlyp.api.dto.account;
 
-import java.util.Date;
-
-/**
- * Created by Lenovo on 2019/1/4.
- */
-public class HesoAccount {
+public class AccountDto {
     private String account;
     private String userId;
     private String sex;
-    private Date birthday;
-    private String email;
+    private String token;
+    private String openid;
+
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
 
 
     public String getAccount() {
@@ -37,19 +41,11 @@ public class HesoAccount {
         this.sex = sex;
     }
 
-    public Date getBirthday() {
-        return birthday;
+    public String getToken() {
+        return token;
     }
 
-    public void setBirthday(Date birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

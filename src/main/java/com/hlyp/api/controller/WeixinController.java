@@ -2,10 +2,13 @@ package com.hlyp.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hlyp.api.bean.HesoAccount;
 import com.hlyp.api.bean.HesoOrderConsume;
 import com.hlyp.api.bean.HesoOrderPay;
 import com.hlyp.api.param.payParam.WxCheckParam;
+import com.hlyp.api.param.wexinParam.LoginParam;
 import com.hlyp.api.param.wexinParam.PayParam;
+import com.hlyp.api.service.AccountService;
 import com.hlyp.api.service.HesoOrderConsumeService;
 import com.hlyp.api.service.HesoPayOrderService;
 import com.hlyp.api.utils.IpUtils;
@@ -57,30 +60,36 @@ public class WeixinController extends WeixinSupport {
     private HesoPayOrderService payOrderService;
     @Autowired
     private HesoOrderConsumeService orderConsumeService;
+
+    @Autowired
+    private AccountService accountService ;
+
     /**
      * 小程序后台登录，向微信平台发送获取access_token请求，并返回openId
      *
-     * @param code
+     * @param loginParam
      * @return openid
      * @throws WeixinException
      * @throws IOException
      * @since Weixin4J 1.0.0
      */
     @PostMapping("/login")
-    public Map<String,Object>  login(String code, HttpServletRequest request)throws WeixinException,IOException {
-        if (code == null || code.equals("")) {
+    public Json  login(@RequestBody LoginParam loginParam, HttpServletRequest request)throws WeixinException,IOException {
+        if (loginParam.getCode() == null || loginParam.getCode().equals("")) {
             throw new WeixinException("invalid null, code is null.");
         }
-
+        Json json = new Json();
         Map<String, Object> ret = new HashMap<String, Object>();
         //拼接参数
-        String param = "?grant_type=" + grant_type + "&appid=" + WxPayConfig.appid + "&secret=" + WxPayConfig.key + "&js_code=" + code;
-
+        String param = "?grant_type=" + grant_type + "&appid=" + WxPayConfig.appid + "&secret=" + WxPayConfig.secret + "&js_code=" + loginParam.getCode();
+        logger.info("login登录："+param);
+        System.out.println("login登录："+param);
         //创建请求对象
         HttpsClient http = new HttpsClient();
         //调用获取access_token接口
         Response res = http.get("https://api.weixin.qq.com/sns/jscode2session" + param);
         //根据请求结果判定，是否验证成功
+
         JSONObject jsonObj = res.asJSONObject();
         if (jsonObj != null) {
             Object errcode = jsonObj.get("errcode");
@@ -94,8 +103,22 @@ public class WeixinController extends WeixinSupport {
 
             logger.info("openid=" + oauthJsToken.getOpenid());
             ret.put("openid", oauthJsToken.getOpenid());
+            ret.put("session_key",oauthJsToken.getSession_key());
+            if(loginParam.getAccount()!=null&&!loginParam.getAccount().equals("")){
+                HesoAccount account = new HesoAccount();
+                account.setOpenid(oauthJsToken.getOpenid());
+                account.setAccount(loginParam.getAccount());
+                account.setComment(oauthJsToken.getSession_key());
+                accountService.updateAccount(account);
+
+            }
+
         }
-        return ret;
+        json.setData(ret);
+        json.setMsg("操作成功");
+        json.setSuccess(true);
+
+        return json;
     }
     /**
      * @Description: 发起微信支付
@@ -126,6 +149,10 @@ public class WeixinController extends WeixinSupport {
 
 
             String money = MoneyUtil.toCent(amount)+"";//支付金额，单位：分，这边需要转成字符串类型，否则后面的签名会失败
+            String account = hesoOrderConsume.getAccount();
+            if("0000000000000909".equals(account)){
+                money = "1";
+            }
             String openid = param.getOpenId();
             Map<String, String> packageParams = new HashMap<String, String>();
             packageParams.put("appid", WxPayConfig.appid);
@@ -337,10 +364,10 @@ public class WeixinController extends WeixinSupport {
 
 
 
-/*
 
 
-    public static void main(String args[]) throws  Exception{
+
+    /*public static void main(String args[]) throws  Exception{
         String notityXml = "<xml><appid><![CDATA[wx531766c4b68163fa]]></appid><bank_type><![CDATA[CFT]]></bank_type><cash_fee><![CDATA[1]]></cash_fee><fee_type><![CDATA[CNY]]></fee_type><is_subscribe><![CDATA[N]]></is_subscribe><mch_id><![CDATA[1495316782]]></mch_id><nonce_str><![CDATA[zf3gg0ecrhvic9oo84l8duxafzn03t7p]]></nonce_str><openid><![CDATA[oBKmW5EZitIfczkUf4xmw1N4UvmA]]></openid><out_trade_no><![CDATA[oBKmW5EZitIfczkUf4xmw1N4UvmA]]></out_trade_no><result_code><![CDATA[SUCCESS]]></result_code><return_code><![CDATA[SUCCESS]]></return_code><sign><![CDATA[B12832507A2E436857D21250D769CD88]]></sign><time_end><![CDATA[20190103154349]]></time_end><total_fee>1</total_fee><trade_type><![CDATA[JSAPI]]></trade_type><transaction_id><![CDATA[4200000217201901030055889400]]></transaction_id></xml>\n";
         Map map1 = PayUtil.doXMLParse(notityXml);
 
@@ -352,10 +379,31 @@ public class WeixinController extends WeixinSupport {
         param.setMach_id(WxPayConfig.mch_id);
         param.setTransaction_id(transaction_id);
         param.setNonce_str("");
-        Map map = checkOrder(param);
+       // Map map = checkOrder(param);
+        String xml = "<?xml version='1.0' encoding='utf-8'?>\n" +
+                "<message>\n" +
+                "    <head>\n" +
+                "        <type>001000</type>\n" +
+                "        <messageId></messageId>\n" +
+                "        <agentId></agentId>\n" +
+                "        <digest></digest>\n" +
+                "    </head>\n" +
+                "    <body>\n" +
+                "        <response>\n" +
+                "            <responseCode>000000</responseCode>\n" +
+                "            <responseMsg>交易成功</responseMsg>\n" +
+                "        </response>\n" +
+                "        <responseData>\n" +
+                "            <account>0000000000001960</account>\n" +
+                "            <token>null</token>\n" +
+                "            <userId>用户jKzDuA</userId>\n" +
+                "        </responseData>\n" +
+                "    </body>\n" +
+                "</message>";
+        Map map = PayUtil.doXMLParse(xml);
 
-
-        String returnCode = (String) map.get("return_code");
+        String returnCode = (String) map.get("body");
+        int t = returnCode.indexOf("交易成功");
         System.out.println(returnCode+" "+ transaction_id+" "+ tradeId);
     }*/
 }

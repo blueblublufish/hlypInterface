@@ -1,18 +1,14 @@
 package com.hlyp.api.controller;
 
-import com.hlyp.api.bean.HesoOrderPay;
 import com.hlyp.api.bean.User;
 import com.hlyp.api.param.userParam.UserAddParam;
 import com.hlyp.api.service.HesoPayOrderService;
 import com.hlyp.api.service.TestInterFace;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +22,7 @@ import java.util.List;
 @Api(value = "测试用户模块")
 public class UserController {
     private final Logger log = LoggerFactory.getLogger(UserController.class);
-    @Autowired
+    /*@Autowired
     private TestInterFace testInterFace;
 
     @Autowired
@@ -59,6 +55,6 @@ public class UserController {
     List<User> getAll(){
         return testInterFace.findAll();
     }
-
+*/
 
 }

@@ -11,6 +11,15 @@ public class AccountParam {
     private String sex;
     private Date birthday;
     private String email;
+    private String image;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getAccount() {
         return account;

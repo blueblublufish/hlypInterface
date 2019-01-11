@@ -1,7 +1,5 @@
 package com.hlyp.api.param.userParam;
 
-import com.hlyp.api.bean.User;
-
 import java.util.List;
 
 /**

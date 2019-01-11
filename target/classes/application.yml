@@ -16,3 +16,7 @@ wxPay:
   mchId: 1495316782
   mchKey: HAGO38g12haiG87Tug57syGuy6afy672
   notifyUrl: https://hlapi.myhlyp.com/hlypInterface/weixin/wxNotify
+
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.hlyp.api.bean

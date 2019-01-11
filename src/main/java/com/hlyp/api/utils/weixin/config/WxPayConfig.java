@@ -19,6 +19,8 @@ public class WxPayConfig {
     public static final String key = "HAGO38g12haiG87Tug57syGuy6afy672";
     //支付成功后的服务器回调url
     public static final String notify_url = "https://hlapi.myhlyp.com/hlypInterface/weixin/wxNotify";
+    //小程序secret
+    public static final String secret = "cd9f063c275720578e6912a011d55f04";
     //签名方式
     public static final String SIGNTYPE = "MD5";
     //交易类型
@@ -29,4 +31,7 @@ public class WxPayConfig {
     public static final String check_url = "https://api.mch.weixin.qq.com/pay/orderquery";
     //调用hlyp旧系统地址
     public static final String hlyp_old_url = "https://hlapi.myhlyp.com/heso_project_yiersan/servlet/TransactionServlet";
+
+    public static final String grent_type = "authorization_code";
+
 }

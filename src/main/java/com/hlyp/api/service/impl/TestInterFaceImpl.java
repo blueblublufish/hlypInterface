@@ -29,15 +29,23 @@ public class TestInterFaceImpl implements TestInterFace {
     public User testUser(String username) {
         User user = new User();
         user.setUsername(username);
-        User userById = userMapper.selectOne(user);
-        user.setSex("33");
-        int d = userMapper.updateByPrimaryKeySelective(user);
+       // User userById = userMapper.selectOne(user);
+
         user.setUsername(username);
+        User ser = userMapper.selectByPrimaryKey(1);
+        User user2 = new User();
+        user2.setId(ser.getId());
+        user2.setNewtest("a test update");
+        int d = userMapper.updateByPrimaryKeySelective(user2);
         UserExample example = new UserExample();
         UserExample.Criteria criteria =example.createCriteria();
         criteria.andUsernameEqualTo(username);
+
         List<User> userresult = userMapper.selectByExample(example);
-        return userresult.get(0);
+        user.setSex("33");
+
+
+        return user ;
     }
 
     @Override

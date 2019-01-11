@@ -1,14 +1,19 @@
 package com.hlyp.api.controller;
 
+import com.hlyp.api.bean.HesoAccount;
 import com.hlyp.api.bean.HesoCurrency;
 import com.hlyp.api.dao.HesoCurrencyDao;
+import com.hlyp.api.dto.account.AccountDto;
 import com.hlyp.api.param.account.AccountParam;
 import com.hlyp.api.param.account.CurrencyParam;
+import com.hlyp.api.param.account.RegisterOrSignInParam;
 import com.hlyp.api.param.order.HesoCustomNeedParam;
 import com.hlyp.api.service.AccountService;
 import com.hlyp.api.vo.Json;
+import com.thoughtworks.xstream.converters.extended.RegexPatternConverter;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +34,28 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+
+    @PostMapping("/registerOrSignIn")
+    @ApiOperation(value = "登录或注册")
+    public  Json registerOrSignIn(@RequestBody RegisterOrSignInParam param) throws  Exception{
+
+        Json json = new Json();
+
+        HesoAccount account = accountService.decodeUserInfo(param.getEncryptedData(),param.getIv(),param.getSessionKey(),param.getOpenId());
+        if(account!=null){
+            AccountDto dto = new AccountDto();
+            BeanUtils.copyProperties(account,dto);
+            dto.setToken(account.getLoginPassword());
+            json.setMsg("操作成功");
+            json.setSuccess(true);
+            json.setData(dto);
+        }else {
+            json.setMsg("操作失败");
+            json.setSuccess(false);
+
+        }
+      return json;
+    }
 
     @PostMapping("/updateAccount")
     @ApiOperation(value = "修改用户信息")
