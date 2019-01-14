@@ -25,7 +25,7 @@
                          targetProject="src/main/java" />
 
 
-    <table tableName="heso_supplier"/>
+    <table tableName="heso_apply_contact_us"/>
 
 </context>
 

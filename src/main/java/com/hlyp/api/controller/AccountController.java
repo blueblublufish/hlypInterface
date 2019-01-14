@@ -1,14 +1,17 @@
 package com.hlyp.api.controller;
 
 import com.hlyp.api.bean.HesoAccount;
+import com.hlyp.api.bean.HesoApplyContactUs;
 import com.hlyp.api.bean.HesoCurrency;
 import com.hlyp.api.dao.HesoCurrencyDao;
 import com.hlyp.api.dto.account.AccountDto;
 import com.hlyp.api.param.account.AccountParam;
+import com.hlyp.api.param.account.ApplyContactUsAddParam;
 import com.hlyp.api.param.account.CurrencyParam;
 import com.hlyp.api.param.account.RegisterOrSignInParam;
 import com.hlyp.api.param.order.HesoCustomNeedParam;
 import com.hlyp.api.service.AccountService;
+import com.hlyp.api.service.HesoApplyContactUsService;
 import com.hlyp.api.vo.Json;
 import com.thoughtworks.xstream.converters.extended.RegexPatternConverter;
 import io.swagger.annotations.Api;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +37,29 @@ public class AccountController {
 
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private HesoApplyContactUsService applyContactUsService;
 
+    @PostMapping("/addContactUs")
+    @ApiOperation(value = "新增联系我们")
+    public Json addContacUs(@RequestBody ApplyContactUsAddParam param){
+        Json json = new Json();
+        HesoApplyContactUs hesoApplyContactUs = new HesoApplyContactUs();
+        BeanUtils.copyProperties(param,hesoApplyContactUs);
+        hesoApplyContactUs.setCreateTime(new Date());
+        hesoApplyContactUs.setStatus(false);
+        int result = applyContactUsService.addHesoApplyContactYs(hesoApplyContactUs);
+        if(result == 0){
+            json.setData("");
+            json.setMsg("插入失败");
+            json.setSuccess(false);
+        }else {
+            json.setData("");
+            json.setMsg("插入成功");
+            json.setSuccess(true);
+        }
+        return json;
+    }
 
     @PostMapping("/registerOrSignIn")
     @ApiOperation(value = "登录或注册")

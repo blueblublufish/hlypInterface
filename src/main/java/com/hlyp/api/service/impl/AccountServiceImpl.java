@@ -52,7 +52,7 @@ public class AccountServiceImpl implements AccountService{
         HesoAccountExample.Criteria criteria = example.createCriteria();
         criteria.andMobileEqualTo(result);
         List<HesoAccount> list = accountMapper.selectByExample(example);
-        if(list==null && list.size()==0){
+        if(list==null || list.size()==0){
             String xml = "<?xml version='1.0' encoding='UTF-8'?>\n" +
                     "<message>\n" +
                     "<head>\n" +

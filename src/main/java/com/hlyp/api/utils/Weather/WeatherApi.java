@@ -57,7 +57,7 @@ public class WeatherApi {
                 }
             }
             String strStart = "day_air_temperature\":\"";
-            String strEnd = "\",\"night_wind_direction\"";
+            String strEnd = "\",\"day_wind_direction\"";
             int strStartIndex = weatherToday.indexOf(strStart);
             int strEndIndex = weatherToday.indexOf(strEnd);
             //System.out.println(weatherToday);
